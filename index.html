@@ -54,7 +54,7 @@
 
         .greeting-card {
             width: 90%;
-            height: 70vh; /* 稍微调小高度，适应手机 */
+            height: 70vh;
             max-height: 700px;
             background: rgba(242, 228, 211, 0.95);
             backdrop-filter: blur(10px);
@@ -128,13 +128,13 @@
             overflow: hidden;
         }
 
-        /* 信封基础样式 - 【已缩小尺寸】 */
+        /* 信封基础样式 */
         .envelope {
             position: absolute;
-            width: 60vmin;  /* 原来是 75vmin，缩小为 60vmin */
-            height: 42vmin; /* 原来是 55vmin，缩小为 42vmin */
-            max-width: 320px; /* 原来是 450px，缩小为 320px */
-            max-height: 230px; /* 原来是 330px，缩小为 230px */
+            width: 60vmin;  
+            height: 42vmin; 
+            max-width: 320px; 
+            max-height: 230px; 
             background: #e3c9a9;
             border-radius: 16px 16px 24px 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 4px #b28b6e, 0 0 0 8px #dac09e inset;
@@ -166,7 +166,6 @@
             z-index: 2;
         }
 
-        /* 打开状态：盖子向后翻折 */
         .envelope.open::before {
             transform: rotateX(180deg);
             z-index: -1;
@@ -210,7 +209,6 @@
             transition: opacity 0.3s;
         }
 
-        /* 打开后：隐藏提示和火漆印 */
         .envelope.open .envelope-hint,
         .envelope.open::after {
             opacity: 0;
@@ -228,7 +226,7 @@
             padding: 25px 15px;
             border-radius: 16px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 0 3px #e3c9a9;
-            font-size: 1.5rem; /* 稍微调小字号 */
+            font-size: 1.5rem;
             line-height: 1.5;
             text-align: center;
             color: #5a3623;
@@ -242,7 +240,6 @@
             word-break: break-word;
         }
 
-        /* 显示情话 */
         .love-message.show {
             opacity: 1;
             visibility: visible;
@@ -260,7 +257,6 @@
             .greeting-text { font-size: 3rem; }
             .cat-paw { width: 80px; height: 80px; bottom: 25px; right: 20px; }
             .paw-icon::before { font-size: 48px; }
-            /* 移动端信封进一步缩小 */
             .envelope { width: 75vmin; height: 52vmin; max-width: 290px; max-height: 210px; }
             .envelope-hint { font-size: 15px; bottom: 25px; }
             .envelope::after { width: 34px; height: 34px; font-size: 16px; bottom: 12px; right: 12px; }
@@ -271,24 +267,20 @@
 <body>
     <div class="bg-overlay"></div>
 
-    <!-- 背景音乐 -->
     <audio id="bgMusic" loop preload="auto">
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- 初始主页 -->
     <div class="intro-page" id="introPage">
         <div class="greeting-card">
             <div class="greeting-text">很高兴<br>认识你</div>
         </div>
     </div>
 
-    <!-- 猫爪按钮 -->
     <div class="cat-paw" id="catPaw">
         <div class="paw-icon"></div>
     </div>
 
-    <!-- 游戏区 -->
     <div class="game-area" id="gameArea"></div>
 
     <script>
@@ -304,11 +296,13 @@
 
             const introPage = document.getElementById('introPage');
             const catPaw = document.getElementById('catPaw');
+            const pawIcon = document.querySelector('.paw-icon');
             const gameArea = document.getElementById('gameArea');
             const bgMusic = document.getElementById('bgMusic');
 
             let isProcessing = false;
             let messageTimer = null;
+            let hasFinished = false; // 新增：记录是否已经看完所有信封
 
             function clearTimer() {
                 if (messageTimer) clearTimeout(messageTimer);
@@ -328,22 +322,15 @@
             function getRandomTransformInfo() {
                 const viewWidth = window.innerWidth;
                 const viewHeight = window.innerHeight;
-                
-                // 同步修改 JS 里的尺寸计算逻辑，确保居中和边界正确
                 const envW = Math.min(viewWidth * 0.75, 320); 
                 const envH = envW * 0.7; 
-
                 const paddingX = viewWidth * 0.05;
                 const paddingY = viewHeight * 0.05;
-
                 const maxLeft = viewWidth - envW - paddingX;
                 const maxTop = viewHeight - envH - paddingY;
-
                 let left = maxLeft > paddingX ? Math.random() * (maxLeft - paddingX) + paddingX : (viewWidth - envW) / 2;
                 let top = maxTop > paddingY ? Math.random() * (maxTop - paddingY) + paddingY : (viewHeight - envH) / 2;
-
                 const randomRotate = (Math.random() * 30 - 15).toFixed(2);
-
                 return { left, top, rotate: randomRotate };
             }
 
@@ -392,6 +379,8 @@
 
                         if (index === MESSAGES.length - 1) {
                             isProcessing = false;
+                            hasFinished = true; // 标记为已全部看完
+                            pawIcon.innerHTML = '<span style="font-size: 20px; font-weight: bold; color: #5a3623; writing-mode: vertical-rl; letter-spacing: 2px;">下次见</span>'; // 猫爪文字变化
                             catPaw.classList.remove('hidden');
                         } else {
                             setTimeout(() => {
@@ -426,6 +415,7 @@
                 introPage.classList.add('hidden');
                 catPaw.classList.add('hidden');
                 isProcessing = true;
+                hasFinished = false;
 
                 bgMusic.volume = 0.5; 
                 bgMusic.play().catch(err => {
@@ -437,8 +427,14 @@
                 }, 100);
             }
 
+            // 点击猫爪的逻辑
             catPaw.addEventListener('click', function() {
-                if (!isProcessing) {
+                if (hasFinished) {
+                    // 如果已经看完信封，再次点击猫爪，退回到初始主页
+                    resetAll();
+                    pawIcon.innerHTML = ''; // 恢复猫爪图标
+                    hasFinished = false;
+                } else if (!isProcessing) {
                     startSequence();
                 }
             });
