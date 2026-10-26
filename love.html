@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>很高兴认识你</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #3e2c1f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'ZCOOL KuaiLe', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 背景层 */
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 30%, #b89b7b, #7a5a42 50%, #4d3527 100%);
+            opacity: 0.9;
+            z-index: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* ---------- 1. 初始主页（占据 80%） ---------- */
+        .intro-page {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        .intro-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .greeting-card {
+            width: 90%;
+            height: 80vh;
+            max-height: 800px;
+            background: rgba(242, 228, 211, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 60px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35), 0 0 0 3px #c9b09b inset, 0 0 0 6px #b28b6e inset;
+            border: 2px solid #d9c6b2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .greeting-text {
+            font-size: 4.5rem;
+            font-weight: bold;
+            color: #5a3623;
+            text-shadow: 
+                3px 3px 0px #fff2e0,
+                -2px -2px 0px #fff2e0,
+                2px -2px 0px #fff2e0,
+                -2px 2px 0px #fff2e0,
+                6px 6px 15px rgba(0, 0, 0, 0.15);
+            letter-spacing: 5px;
+            line-height: 1.3;
+            text-align: center;
+            transform: rotate(-3deg);
+        }
+
+        /* ---------- 2. 猫爪按钮 ---------- */
+        .cat-paw {
+            position: fixed;
+            bottom: 50px;
+            right: 35px;
+            width: 105px;
+            height: 105px;
+            background: #d9b382;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 5px #c69c6d, 0 0 0 10px #a77b53;
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.2s ease, opacity 0.3s, visibility 0.3s;
+            animation: pulse 2.5s infinite;
+            border: 3px solid #f3e3cf;
+        }
+
+        .cat-paw:active {
+            transform: scale(0.92);
+        }
+
+        .cat-paw.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .paw-icon::before {
+            content: "🐾";
+            font-size: 65px;
+            display: block;
+            transform: scale(1.2);
+        }
+
+        /* ---------- 3. 信封与游戏区 ---------- */
+        .game-area {
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            pointer-events: none; 
+            overflow: hidden;
+        }
+
+        /* 信封基础样式 - 更大更宽 */
+        .envelope {
+            position: absolute;
+            width: 75vmin;  
+            height: 55vmin;
+            max-width: 450px;
+            max-height: 330px;
+            background: #e3c9a9;
+            border-radius: 16px 16px 24px 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 4px #b28b6e, 0 0 0 8px #dac09e inset;
+            transform-origin: center;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2), box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #b28b6e;
+        }
+
+        /* 信封盖子 */
+        .envelope::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 45%;
+            background: #d6b48c;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            border-radius: 16px 16px 0 0;
+            border-bottom: 2px solid #b28b6e;
+            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            transform-origin: top;
+            z-index: 2;
+        }
+
+        /* 打开状态：盖子向后翻折 */
+        .envelope.open::before {
+            transform: rotateX(180deg);
+            z-index: -1;
+        }
+
+        /* 火漆印 */
+        .envelope::after {
+            content: "❤";
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #b3443c;
+            background: #f3e3cf;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border: 2px solid #aa7e5e;
+            z-index: 1;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        /* 点击提示文字 */
+        .envelope-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #4f2e1b;
+            letter-spacing: 2px;
+            z-index: 3;
+            pointer-events: none;
+            font-family: 'PingFang SC', sans-serif;
+            transition: opacity 0.3s;
+        }
+
+        /* 打开后：隐藏提示和火漆印 */
+        .envelope.open .envelope-hint,
+        .envelope.open::after {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        /* 情话文字容器 */
+        .love-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -30%) scale(0.8);
+            width: 85%;
+            background: #f9f0e6;
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 0 3px #e3c9a9;
+            font-size: 1.8rem;
+            line-height: 1.6;
+            text-align: center;
+            color: #5a3623;
+            letter-spacing: 1px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+            z-index: 5;
+            pointer-events: none;
+            border: 2px solid #b28b6e;
+            word-break: break-word;
+        }
+
+        /* 显示情话 */
+        .love-message.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 5px #c69c6d, 0 0 0 10px #a77b53; }
+            50% { box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 0 10px #d9b382, 0 0 0 18px #b28b6e; }
+            100% { box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 0 5px #c69c6d, 0 0 0 10px #a77b53; }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 420px) {
+            .greeting-text { font-size: 3.2rem; }
+            .cat-paw { width: 85px; height: 85px; bottom: 30px; right: 25px; }
+            .paw-icon::before { font-size: 52px; }
+            .envelope { width: 80vmin; height: 60vmin; max-width: 350px; max-height: 260px; }
+            .envelope-hint { font-size: 16px; bottom: 30px; }
+            .envelope::after { width: 36px; height: 36px; font-size: 18px; bottom: 12px; right: 12px; }
+            .love-message { font-size: 1.5rem; padding: 20px 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+
+    <!-- 背景音乐 (默认循环、预加载) -->
+    <!-- 这里使用了一个公开的轻音乐直链，您可以替换为自己的本地音乐文件，例如: src="./bgm.mp3" -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- 初始主页 -->
+    <div class="intro-page" id="introPage">
+        <div class="greeting-card">
+            <div class="greeting-text">很高兴<br>认识你</div>
+        </div>
+    </div>
+
+    <!-- 猫爪按钮 -->
+    <div class="cat-paw" id="catPaw">
+        <div class="paw-icon"></div>
+    </div>
+
+    <!-- 游戏区 -->
+    <div class="game-area" id="gameArea"></div>
+
+    <script>
+        (function(){
+            const MESSAGES = [
+                "希望你永远快乐，\n任何选择过后都洒脱。",
+                "先生\n用我这一腔的爱意，\n换与你同看这一院的四季,\n可好？",
+                "一生长短未知，\n可看此后经年。",
+                "我想,\n一个眼神，\n就到老。"
+            ];
+
+            // 将停留时间修改为 3000 毫秒 (3秒)
+            const DISPLAY_DURATION = 3000;
+
+            const introPage = document.getElementById('introPage');
+            const catPaw = document.getElementById('catPaw');
+            const gameArea = document.getElementById('gameArea');
+            const bgMusic = document.getElementById('bgMusic');
+
+            let isProcessing = false;
+            let messageTimer = null;
+
+            function clearTimer() {
+                if (messageTimer) clearTimeout(messageTimer);
+                messageTimer = null;
+            }
+
+            function resetAll() {
+                clearTimer();
+                gameArea.innerHTML = '';
+                isProcessing = false;
+                introPage.classList.remove('hidden');
+                catPaw.classList.remove('hidden');
+                // 重置时暂停并重置音乐
+                bgMusic.pause();
+                bgMusic.currentTime = 0;
+            }
+
+            // 生成随机位置及随机倾斜角度
+            function getRandomTransformInfo() {
+                const viewWidth = window.innerWidth;
+                const viewHeight = window.innerHeight;
+                
+                const envW = Math.min(viewWidth * 0.75, 450);
+                const envH = envW * 0.75; 
+
+                const paddingX = viewWidth * 0.05;
+                const paddingY = viewHeight * 0.05;
+
+                const maxLeft = viewWidth - envW - paddingX;
+                const maxTop = viewHeight - envH - paddingY;
+
+                let left = maxLeft > paddingX ? Math.random() * (maxLeft - paddingX) + paddingX : (viewWidth - envW) / 2;
+                let top = maxTop > paddingY ? Math.random() * (maxTop - paddingY) + paddingY : (viewHeight - envH) / 2;
+
+                const randomRotate = (Math.random() * 30 - 15).toFixed(2);
+
+                return { left, top, rotate: randomRotate };
+            }
+
+            // 生成信封
+            function spawnEnvelope(index) {
+                const envelope = document.createElement('div');
+                envelope.className = 'envelope';
+                
+                const pos = getRandomTransformInfo();
+                envelope.style.left = `${pos.left}px`;
+                envelope.style.top = `${pos.top}px`;
+                
+                const finalTransform = `rotate(${pos.rotate}deg)`;
+                envelope.style.transform = finalTransform;
+
+                const hint = document.createElement('div');
+                hint.className = 'envelope-hint';
+                hint.textContent = '点击打开';
+                envelope.appendChild(hint);
+
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'love-message';
+                envelope.appendChild(msgDiv);
+
+                envelope.dataset.clicked = 'false';
+
+                // 点击打开信封
+                envelope.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (this.dataset.clicked === 'true') return;
+
+                    this.dataset.clicked = 'true';
+                    this.classList.add('open'); 
+
+                    const msg = this.querySelector('.love-message');
+                    msg.textContent = MESSAGES[index];
+                    
+                    setTimeout(() => {
+                        msg.classList.add('show');
+                    }, 200);
+
+                    // 3秒倒计时
+                    clearTimer();
+                    messageTimer = setTimeout(() => {
+                        msg.classList.remove('show');
+                        setTimeout(() => {
+                            this.classList.remove('open');
+                        }, 200);
+
+                        // 最后一个信封结束
+                        if (index === MESSAGES.length - 1) {
+                            isProcessing = false;
+                            catPaw.classList.remove('hidden');
+                            // 可选：全部结束后逐渐调低音量或暂停音乐
+                            // 这里暂不暂停，以保留氛围感
+                        } else {
+                            setTimeout(() => {
+                                spawnEnvelope(index + 1);
+                            }, 300);
+                        }
+                    }, DISPLAY_DURATION);
+                });
+
+                gameArea.appendChild(envelope);
+
+                const initialTransform = `translate(150px, 150px) rotate(30deg) scale(0.4)`;
+                const animateTransform = [
+                    { opacity: 0, transform: initialTransform },
+                    { opacity: 1, transform: `translate(-10px, -10px) rotate(${parseFloat(pos.rotate) - 5}deg) scale(1.02)`, offset: 0.7 },
+                    { opacity: 1, transform: finalTransform }
+                ];
+
+                envelope.animate(animateTransform, {
+                    duration: 600,
+                    easing: 'cubic-bezier(0.2, 0.9, 0.3, 1.1)',
+                    fill: 'forwards'
+                });
+                
+                setTimeout(() => {
+                    envelope.style.transform = finalTransform;
+                }, 600);
+            }
+
+            function startSequence() {
+                resetAll();
+                introPage.classList.add('hidden');
+                catPaw.classList.add('hidden');
+                isProcessing = true;
+
+                // 【关键点】用户点击猫爪时，播放背景音乐
+                bgMusic.volume = 0.5; // 设置初始音量 (0.0 到 1.0)
+                bgMusic.play().catch(err => {
+                    console.log("浏览器拦截了自动播放，或加载失败:", err);
+                });
+                
+                setTimeout(() => {
+                    spawnEnvelope(0);
+                }, 100);
+            }
+
+            catPaw.addEventListener('click', function() {
+                if (!isProcessing) {
+                    startSequence();
+                }
+            });
+
+            document.body.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+
+        })();
+    </script>
+</body>
+</html>
