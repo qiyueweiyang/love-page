@@ -35,7 +35,7 @@
             transition: opacity 0.5s ease;
         }
 
-        /* ---------- 1. 初始主页（占据 80%） ---------- */
+        /* ---------- 1. 初始主页 ---------- */
         .intro-page {
             position: fixed;
             inset: 0;
@@ -54,11 +54,11 @@
 
         .greeting-card {
             width: 90%;
-            height: 80vh;
-            max-height: 800px;
+            height: 70vh; /* 稍微调小高度，适应手机 */
+            max-height: 700px;
             background: rgba(242, 228, 211, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 60px;
+            border-radius: 50px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35), 0 0 0 3px #c9b09b inset, 0 0 0 6px #b28b6e inset;
             border: 2px solid #d9c6b2;
             display: flex;
@@ -67,7 +67,7 @@
         }
 
         .greeting-text {
-            font-size: 4.5rem;
+            font-size: 4.2rem;
             font-weight: bold;
             color: #5a3623;
             text-shadow: 
@@ -85,10 +85,10 @@
         /* ---------- 2. 猫爪按钮 ---------- */
         .cat-paw {
             position: fixed;
-            bottom: 50px;
-            right: 35px;
-            width: 105px;
-            height: 105px;
+            bottom: 40px;
+            right: 30px;
+            width: 90px;
+            height: 90px;
             background: #d9b382;
             border-radius: 50%;
             display: flex;
@@ -114,7 +114,7 @@
 
         .paw-icon::before {
             content: "🐾";
-            font-size: 65px;
+            font-size: 55px;
             display: block;
             transform: scale(1.2);
         }
@@ -128,13 +128,13 @@
             overflow: hidden;
         }
 
-        /* 信封基础样式 - 更大更宽 */
+        /* 信封基础样式 - 【已缩小尺寸】 */
         .envelope {
             position: absolute;
-            width: 75vmin;  
-            height: 55vmin;
-            max-width: 450px;
-            max-height: 330px;
+            width: 60vmin;  /* 原来是 75vmin，缩小为 60vmin */
+            height: 42vmin; /* 原来是 55vmin，缩小为 42vmin */
+            max-width: 320px; /* 原来是 450px，缩小为 320px */
+            max-height: 230px; /* 原来是 330px，缩小为 230px */
             background: #e3c9a9;
             border-radius: 16px 16px 24px 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 4px #b28b6e, 0 0 0 8px #dac09e inset;
@@ -180,13 +180,13 @@
             right: 20px;
             color: #b3443c;
             background: #f3e3cf;
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             border: 2px solid #aa7e5e;
             z-index: 1;
@@ -196,11 +196,11 @@
         /* 点击提示文字 */
         .envelope-hint {
             position: absolute;
-            bottom: 40px;
+            bottom: 35px;
             left: 0;
             width: 100%;
             text-align: center;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: #4f2e1b;
             letter-spacing: 2px;
@@ -223,13 +223,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -30%) scale(0.8);
-            width: 85%;
+            width: 90%;
             background: #f9f0e6;
-            padding: 30px 20px;
-            border-radius: 20px;
+            padding: 25px 15px;
+            border-radius: 16px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 0 3px #e3c9a9;
-            font-size: 1.8rem;
-            line-height: 1.6;
+            font-size: 1.5rem; /* 稍微调小字号 */
+            line-height: 1.5;
             text-align: center;
             color: #5a3623;
             letter-spacing: 1px;
@@ -257,21 +257,21 @@
 
         /* 移动端适配 */
         @media (max-width: 420px) {
-            .greeting-text { font-size: 3.2rem; }
-            .cat-paw { width: 85px; height: 85px; bottom: 30px; right: 25px; }
-            .paw-icon::before { font-size: 52px; }
-            .envelope { width: 80vmin; height: 60vmin; max-width: 350px; max-height: 260px; }
-            .envelope-hint { font-size: 16px; bottom: 30px; }
-            .envelope::after { width: 36px; height: 36px; font-size: 18px; bottom: 12px; right: 12px; }
-            .love-message { font-size: 1.5rem; padding: 20px 15px; }
+            .greeting-text { font-size: 3rem; }
+            .cat-paw { width: 80px; height: 80px; bottom: 25px; right: 20px; }
+            .paw-icon::before { font-size: 48px; }
+            /* 移动端信封进一步缩小 */
+            .envelope { width: 75vmin; height: 52vmin; max-width: 290px; max-height: 210px; }
+            .envelope-hint { font-size: 15px; bottom: 25px; }
+            .envelope::after { width: 34px; height: 34px; font-size: 16px; bottom: 12px; right: 12px; }
+            .love-message { font-size: 1.2rem; padding: 20px 15px; }
         }
     </style>
 </head>
 <body>
     <div class="bg-overlay"></div>
 
-    <!-- 背景音乐 (默认循环、预加载) -->
-    <!-- 这里使用了一个公开的轻音乐直链，您可以替换为自己的本地音乐文件，例如: src="./bgm.mp3" -->
+    <!-- 背景音乐 -->
     <audio id="bgMusic" loop preload="auto">
         <source src="music.mp3" type="audio/mpeg">
     </audio>
@@ -300,7 +300,6 @@
                 "我想,\n一个眼神，\n就到老。"
             ];
 
-            // 将停留时间修改为 3000 毫秒 (3秒)
             const DISPLAY_DURATION = 3000;
 
             const introPage = document.getElementById('introPage');
@@ -322,18 +321,17 @@
                 isProcessing = false;
                 introPage.classList.remove('hidden');
                 catPaw.classList.remove('hidden');
-                // 重置时暂停并重置音乐
                 bgMusic.pause();
                 bgMusic.currentTime = 0;
             }
 
-            // 生成随机位置及随机倾斜角度
             function getRandomTransformInfo() {
                 const viewWidth = window.innerWidth;
                 const viewHeight = window.innerHeight;
                 
-                const envW = Math.min(viewWidth * 0.75, 450);
-                const envH = envW * 0.75; 
+                // 同步修改 JS 里的尺寸计算逻辑，确保居中和边界正确
+                const envW = Math.min(viewWidth * 0.75, 320); 
+                const envH = envW * 0.7; 
 
                 const paddingX = viewWidth * 0.05;
                 const paddingY = viewHeight * 0.05;
@@ -349,7 +347,6 @@
                 return { left, top, rotate: randomRotate };
             }
 
-            // 生成信封
             function spawnEnvelope(index) {
                 const envelope = document.createElement('div');
                 envelope.className = 'envelope';
@@ -372,7 +369,6 @@
 
                 envelope.dataset.clicked = 'false';
 
-                // 点击打开信封
                 envelope.addEventListener('click', function(e) {
                     e.stopPropagation();
                     if (this.dataset.clicked === 'true') return;
@@ -387,7 +383,6 @@
                         msg.classList.add('show');
                     }, 200);
 
-                    // 3秒倒计时
                     clearTimer();
                     messageTimer = setTimeout(() => {
                         msg.classList.remove('show');
@@ -395,12 +390,9 @@
                             this.classList.remove('open');
                         }, 200);
 
-                        // 最后一个信封结束
                         if (index === MESSAGES.length - 1) {
                             isProcessing = false;
                             catPaw.classList.remove('hidden');
-                            // 可选：全部结束后逐渐调低音量或暂停音乐
-                            // 这里暂不暂停，以保留氛围感
                         } else {
                             setTimeout(() => {
                                 spawnEnvelope(index + 1);
@@ -435,8 +427,7 @@
                 catPaw.classList.add('hidden');
                 isProcessing = true;
 
-                // 【关键点】用户点击猫爪时，播放背景音乐
-                bgMusic.volume = 0.5; // 设置初始音量 (0.0 到 1.0)
+                bgMusic.volume = 0.5; 
                 bgMusic.play().catch(err => {
                     console.log("浏览器拦截了自动播放，或加载失败:", err);
                 });
